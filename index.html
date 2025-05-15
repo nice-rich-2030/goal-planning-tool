@@ -1,0 +1,1460 @@
+<!--
+Copyright (c) 2025 Daily Growth
+https://yourworklifedesign.blogspot.com/
+All rights reserved.
+-->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ゴール分解・計画ツール</title>
+    <style>
+        :root {
+            --primary-color: #4a6fa5; 
+            --secondary-color: #6b8cbe;
+            --accent-color: #ff9d5c;
+            --light-bg: #f5f7fa;
+            --dark-bg: #2c3e50;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --text-color: #333;
+            --light-text: #f8f9fa;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--light-bg);
+            padding: 0;
+            margin: 0;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            padding: 1rem 2rem;
+            text-align: center;
+        }
+
+        h1, h2, h3, h4 {
+            margin-bottom: 0.5rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+
+        .tab {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            background-color: #e9ecef;
+            border: none;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            margin-right: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .tab.active {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(107, 140, 190, 0.25);
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        button.secondary {
+            background-color: #6c757d;
+        }
+
+        button.secondary:hover {
+            background-color: #5a6268;
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+        }
+
+        .btn-warning {
+            background-color: var(--warning-color);
+            color: var(--text-color);
+        }
+
+        .btn-warning:hover {
+            background-color: #e0a800;
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .timeline {
+            position: relative;
+            margin: 2rem 0;
+            padding-left: 40px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background-color: var(--secondary-color);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -34px;
+            top: 18px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            border: 4px solid var(--secondary-color);
+        }
+
+        .timeline-item .date {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-item .title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-item .description {
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-item .actions {
+            margin-top: 1rem;
+        }
+
+        .action-item {
+            margin-bottom: 0.5rem;
+            padding: 0.5rem;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+        }
+
+        .action-item .checkbox {
+            margin-right: 0.5rem;
+            width: 20px;
+            height: 20px;
+        }
+
+        .action-item.completed {
+            background-color: #d4edda;
+            text-decoration: line-through;
+            color: #6c757d;
+        }
+
+        .action-item-detail {
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .action-item-detail.show {
+            display: block;
+        }
+
+        .progress-container {
+            margin: 1rem 0;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background-color: var(--success-color);
+            width: 0;
+            transition: var(--transition);
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 0.25rem;
+            font-size: 0.875rem;
+            color: #6c757d;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            background-color: var(--light-bg);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            margin-right: 0.5rem;
+        }
+
+        .tag.quick {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: relative;
+            background-color: white;
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+
+        /* 設定関連のスタイル */
+        .settings-panel {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .settings-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .settings-section h3 {
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 0.5rem;
+        }
+
+        .reminder-option {
+            margin-bottom: 0.5rem;
+        }
+
+        .color-option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .color-preview {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+            border: 1px solid #ddd;
+        }
+
+        /* レスポンシブ対応 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0.5rem;
+            }
+
+            .timeline {
+                padding-left: 30px;
+            }
+
+            .timeline::before {
+                left: 8px;
+            }
+
+            .timeline-item::before {
+                left: -26px;
+                width: 16px;
+                height: 16px;
+            }
+
+            .modal-content {
+                margin: 1rem;
+                padding: 1rem;
+            }
+        }
+
+        /* グリッドレイアウト */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        /* ドラッグ&ドロップ関連 */
+        .draggable {
+            cursor: move;
+        }
+
+        .drag-over {
+            border: 2px dashed var(--secondary-color);
+        }
+
+        /* アニメーション */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        /* タブレット・モバイル対応 */
+        @media (max-width: 992px) {
+            .grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+
+        @media (max-width: 576px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tab {
+                padding: 0.5rem;
+                font-size: 0.875rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>ゴール分解・計画ツール</h1>
+        <p>仕事と生活の調和を図りながら目標を分解し、具体的に計画するためのツール</p>
+    </header>
+    <p><a href="https://yourworklifedesign.blogspot.com/2025/04/blog-post_64.html"> マニュアルはこちら</a> </p>
+    <div class="container">
+        <div class="tabs">
+            <button class="tab active" data-tab="goals">ゴール設定</button>
+            <button class="tab" data-tab="milestones">マイルストーン</button>
+            <button class="tab" data-tab="actions">アクション</button>
+            <button class="tab" data-tab="timeline">タイムライン</button>
+            <button class="tab" data-tab="settings">設定</button>
+        </div>
+
+        <div id="goals" class="tab-content active">
+            <div class="card">
+                <h2>最終ゴール設定</h2>
+                <div class="form-group">
+                    <label for="goal-title">ゴールのタイトル</label>
+                    <input type="text" id="goal-title" placeholder="例：新しいスキルを身につける">
+                </div>
+                <div class="form-group">
+                    <label for="goal-description">ゴールの詳細</label>
+                    <textarea id="goal-description" rows="3" placeholder="例：プログラミングスキルを身につけて、自分のアイデアを形にできるようになる"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="goal-deadline">達成期限</label>
+                    <input type="date" id="goal-deadline">
+                </div>
+
+                <h3>仕事面のゴール</h3>
+                <div class="form-group">
+                    <label for="work-goal">仕事面での達成状態</label>
+                    <textarea id="work-goal" rows="3" placeholder="例：仕事で新しいスキルを活かして1つのプロジェクトを完成させている"></textarea>
+                </div>
+
+                <h3>生活面のゴール</h3>
+                <div class="form-group">
+                    <label for="life-goal">生活面での達成状態</label>
+                    <textarea id="life-goal" rows="3" placeholder="例：家族との時間を確保しながら、週に3回は学習時間を確保できている"></textarea>
+                </div>
+
+                <button id="save-goal" class="btn-success">ゴールを保存</button>
+            </div>
+
+            <div class="card">
+                <h2>バックキャスティング</h2>
+                <p>最終ゴールから逆算して、中間地点での達成状態を設定します。</p>
+
+                <div class="form-group">
+                    <label for="month-9">9ヶ月後の状態</label>
+                    <textarea id="month-9" rows="2" placeholder="9ヶ月後にはどこまで達成している必要がありますか？"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="month-6">6ヶ月後の状態</label>
+                    <textarea id="month-6" rows="2" placeholder="6ヶ月後にはどこまで達成している必要がありますか？"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="month-3">3ヶ月後の状態</label>
+                    <textarea id="month-3" rows="2" placeholder="3ヶ月後にはどこまで達成している必要がありますか？"></textarea>
+                </div>
+
+                <button id="save-backcast" class="btn-success">バックキャスティングを保存</button>
+            </div>
+        </div>
+
+        <div id="milestones" class="tab-content">
+            <div class="card">
+                <h2>マイルストーン設定</h2>
+                <p>各中間地点で達成すべき具体的なマイルストーンを設定します。</p>
+                
+                <div class="form-group">
+                    <label for="milestone-title">マイルストーンのタイトル</label>
+                    <input type="text" id="milestone-title" placeholder="例：基礎知識の習得">
+                </div>
+                <div class="form-group">
+                    <label for="milestone-description">詳細</label>
+                    <textarea id="milestone-description" rows="2" placeholder="例：プログラミング言語の基本構文を理解し、簡単なプログラムを書けるようになる"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="milestone-deadline">達成期限</label>
+                    <input type="date" id="milestone-deadline">
+                </div>
+                <div class="form-group">
+                    <label for="milestone-type">種類</label>
+                    <select id="milestone-type">
+                        <option value="work">仕事面</option>
+                        <option value="life">生活面</option>
+                        <option value="both">両方</option>
+                    </select>
+                </div>
+
+                <button id="add-milestone" class="btn-success">マイルストーンを追加</button>
+            </div>
+
+            <div class="card">
+                <h2>マイルストーン一覧</h2>
+                <div id="milestone-list" class="timeline">
+                    <!-- マイルストーンリストがここに表示されます -->
+                </div>
+            </div>
+        </div>
+
+        <div id="actions" class="tab-content">
+            <div class="card">
+                <h2>アクション設定</h2>
+                <p>各マイルストーンを達成するために必要なアクションを設定します。</p>
+                
+                <div class="form-group">
+                    <label for="action-milestone">関連マイルストーン</label>
+                    <select id="action-milestone">
+                        <option value="">マイルストーンを選択してください</option>
+                        <!-- 動的に追加されます -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="action-title">アクションのタイトル</label>
+                    <input type="text" id="action-title" placeholder="例：オンライン講座の最初の3レッスンを完了する">
+                </div>
+                <div class="form-group">
+                    <label for="action-time">所要時間の目安</label>
+                    <select id="action-time">
+                        <option value="5min">5分</option>
+                        <option value="10min">10分</option>
+                        <option value="15min">15分</option>
+                        <option value="30min">30分</option>
+                        <option value="1h">1時間</option>
+                        <option value="2h">2時間以上</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="action-when">実行するタイミング</label>
+                    <input type="text" id="action-when" placeholder="例：平日の朝、出勤前の15分間">
+                </div>
+                <div class="form-group">
+                    <label for="action-where">場所</label>
+                    <input type="text" id="action-where" placeholder="例：自宅のリビング">
+                </div>
+                <div class="form-group">
+                    <label for="action-how">具体的な方法</label>
+                    <textarea id="action-how" rows="2" placeholder="例：スマートフォンアプリを使って、通勤中に学習する"></textarea>
+                </div>
+
+                <button id="add-action" class="btn-success">アクションを追加</button>
+            </div>
+
+            <div class="card">
+                <h2>アクション一覧</h2>
+                <div id="action-list">
+                    <!-- アクションリストがここに表示されます -->
+                </div>
+            </div>
+        </div>
+
+        <div id="timeline" class="tab-content">
+            <div class="card">
+                <h2>タイムライン</h2>
+                <p>設定したゴール、マイルストーン、アクションのタイムラインです。</p>
+                
+                <div class="progress-container">
+                    <h3>全体の進捗状況</h3>
+                    <div class="progress-bar">
+                        <div id="overall-progress" class="progress" style="width: 0%"></div>
+                    </div>
+                    <div class="progress-text">0%</div>
+                </div>
+
+                <div id="timeline-view" class="timeline">
+                    <!-- タイムラインがここに表示されます -->
+                </div>
+            </div>
+        </div>
+
+        <div id="settings" class="tab-content">
+            <div class="settings-panel">
+                <h2>設定</h2>
+
+                <div class="settings-section">
+                    <h3>データ管理</h3>
+                    <button id="export-data" class="btn-secondary">データをエクスポート</button>
+                    <button id="import-data" class="btn-secondary">データをインポート</button>
+                    <input type="file" id="import-file" style="display: none">
+                    <button id="clear-data" class="btn-danger">すべてのデータをクリア</button>
+                </div>
+
+                <div class="settings-section">
+                    <h3>リマインダー設定</h3>
+                    <div class="form-group">
+                        <div class="reminder-option">
+                            <input type="checkbox" id="reminder-daily">
+                            <label for="reminder-daily">日次リマインダー</label>
+                        </div>
+                        <div class="reminder-option">
+                            <input type="checkbox" id="reminder-weekly">
+                            <label for="reminder-weekly">週次リマインダー</label>
+                        </div>
+                        <div class="reminder-option">
+                            <input type="checkbox" id="reminder-monthly">
+                            <label for="reminder-monthly">月次リマインダー</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- アクション詳細モーダル -->
+    <div id="action-detail-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h2>アクション詳細</h2>
+            <div id="action-detail-content">
+                <!-- 動的に生成されます -->
+            </div>
+            <div class="button-group">
+                <button id="mark-complete" class="btn-success">完了にする</button>
+                <button id="edit-action" class="btn-secondary">編集</button>
+                <button id="delete-action" class="btn-danger">削除</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // データの初期化
+        let goalData = {
+            title: '',
+            description: '',
+            deadline: '',
+            workGoal: '',
+            lifeGoal: '',
+            backcast: {
+                month9: '',
+                month6: '',
+                month3: ''
+            },
+            milestones: [],
+            actions: []
+        };
+
+        // ローカルストレージからデータをロード
+        function loadData() {
+            const savedData = localStorage.getItem('goalPlannerData');
+            if (savedData) {
+                goalData = JSON.parse(savedData);
+                renderAll();
+            }
+        }
+
+        // データをローカルストレージに保存
+        function saveData() {
+            localStorage.setItem('goalPlannerData', JSON.stringify(goalData));
+        }
+
+        // ゴール情報を画面に反映
+        function renderGoal() {
+            document.getElementById('goal-title').value = goalData.title;
+            document.getElementById('goal-description').value = goalData.description;
+            document.getElementById('goal-deadline').value = goalData.deadline;
+            document.getElementById('work-goal').value = goalData.workGoal;
+            document.getElementById('life-goal').value = goalData.lifeGoal;
+            document.getElementById('month-9').value = goalData.backcast.month9;
+            document.getElementById('month-6').value = goalData.backcast.month6;
+            document.getElementById('month-3').value = goalData.backcast.month3;
+        }
+
+        // マイルストーン情報を画面に反映
+        function renderMilestones() {
+            const milestoneList = document.getElementById('milestone-list');
+            milestoneList.innerHTML = '';
+
+            // マイルストーンセレクトボックスの更新
+            const milestoneSelect = document.getElementById('action-milestone');
+            milestoneSelect.innerHTML = '<option value="">マイルストーンを選択してください</option>';
+
+            if (goalData.milestones.length === 0) {
+                milestoneList.innerHTML = '<p>まだマイルストーンがありません。マイルストーンを追加してください。</p>';
+                return;
+            }
+
+            // 日付順に並べ替え
+            const sortedMilestones = [...goalData.milestones].sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
+
+            sortedMilestones.forEach((milestone, index) => {
+                // マイルストーンリストへの追加
+                const milestoneItem = document.createElement('div');
+                milestoneItem.className = 'timeline-item fade-in';
+                
+                const typeLabel = milestone.type === 'work' ? '仕事' : milestone.type === 'life' ? '生活' : '両方';
+                const typeColor = milestone.type === 'work' ? '#4a6fa5' : milestone.type === 'life' ? '#28a745' : '#6c757d';
+                
+                milestoneItem.innerHTML = `
+                    <div class="date">${formatDate(milestone.deadline)}</div>
+                    <div class="title">${milestone.title} <span style="background-color: ${typeColor}; color: white; padding: 2px 6px; border-radius: 10px; font-size: 0.75rem;">${typeLabel}</span></div>
+                    <div class="description">${milestone.description}</div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress" id="milestone-progress-${index}" style="width: ${calculateMilestoneProgress(milestone.id)}%"></div>
+                        </div>
+                        <div class="progress-text">${calculateMilestoneProgress(milestone.id)}% 完了</div>
+                    </div>
+                    <div class="button-group">
+                        <button class="btn-secondary btn-sm" onclick="editMilestone('${milestone.id}')">編集</button>
+                        <button class="btn-danger btn-sm" onclick="deleteMilestone('${milestone.id}')">削除</button>
+                    </div>
+                `;
+                milestoneList.appendChild(milestoneItem);
+                
+                // セレクトボックスへの追加
+                const option = document.createElement('option');
+                option.value = milestone.id;
+                option.textContent = milestone.title;
+                milestoneSelect.appendChild(option);
+            });
+        }
+
+        // マイルストーンの進捗率計算
+        function calculateMilestoneProgress(milestoneId) {
+            const relatedActions = goalData.actions.filter(action => action.milestoneId === milestoneId);
+            if (relatedActions.length === 0) return 0;
+            
+            const completedCount = relatedActions.filter(action => action.completed).length;
+            return Math.round((completedCount / relatedActions.length) * 100);
+        }
+
+        // 全体の進捗率計算
+        function calculateOverallProgress() {
+            if (goalData.actions.length === 0) return 0;
+            
+            const completedCount = goalData.actions.filter(action => action.completed).length;
+            return Math.round((completedCount / goalData.actions.length) * 100);
+        }
+
+        // アクション情報を画面に反映
+        function renderActions() {
+            const actionList = document.getElementById('action-list');
+            actionList.innerHTML = '';
+
+            if (goalData.actions.length === 0) {
+                actionList.innerHTML = '<p>まだアクションがありません。アクションを追加してください。</p>';
+                return;
+            }
+
+            // マイルストーン別にグループ化
+            const actionsByMilestone = {};
+            goalData.actions.forEach(action => {
+                if (!actionsByMilestone[action.milestoneId]) {
+                    actionsByMilestone[action.milestoneId] = [];
+                }
+                actionsByMilestone[action.milestoneId].push(action);
+            });
+
+            // マイルストーン順に表示
+            goalData.milestones.forEach(milestone => {
+                if (actionsByMilestone[milestone.id] && actionsByMilestone[milestone.id].length > 0) {
+                    const milestoneHeader = document.createElement('div');
+                    milestoneHeader.className = 'card fade-in';
+                    milestoneHeader.innerHTML = `
+                        <h3>${milestone.title}</h3>
+                        <p>${milestone.description}</p>
+                    `;
+                    actionList.appendChild(milestoneHeader);
+
+                    const actionsContainer = document.createElement('div');
+                    actionsContainer.className = 'card';
+                    
+                    actionsByMilestone[milestone.id].forEach(action => {
+                        const actionItem = document.createElement('div');
+                        actionItem.className = `action-item ${action.completed ? 'completed' : ''}`;
+                        actionItem.setAttribute('data-id', action.id);
+                        
+                        // 所要時間が短いアクションには「クイック」タグを表示
+                        const quickTag = (action.time === '5min' || action.time === '10min') ? 
+                            '<span class="tag quick">クイック</span>' : '';
+                        
+                        actionItem.innerHTML = `
+                            <input type="checkbox" class="checkbox" ${action.completed ? 'checked' : ''} onchange="toggleActionComplete('${action.id}')">
+                            <div>
+                                <div>${action.title} ${quickTag}</div>
+                                <div class="action-time">${getTimeLabel(action.time)}</div>
+                            </div>
+                            <button class="btn-secondary btn-sm" onclick="showActionDetail('${action.id}')">詳細</button>
+                        `;
+                        actionsContainer.appendChild(actionItem);
+                    });
+                    
+                    actionList.appendChild(actionsContainer);
+                }
+            });
+        }
+
+        // タイムラインを画面に反映
+        function renderTimeline() {
+            const timelineView = document.getElementById('timeline-view');
+            timelineView.innerHTML = '';
+
+            // 全体の進捗率を更新
+            const overallProgress = calculateOverallProgress();
+            document.getElementById('overall-progress').style.width = `${overallProgress}%`;
+            document.querySelector('.progress-text').textContent = `${overallProgress}% 完了`;
+
+            // ゴール情報の表示
+            if (goalData.title) {
+                const goalItem = document.createElement('div');
+                goalItem.className = 'timeline-item fade-in';
+                goalItem.innerHTML = `
+                    <div class="date">${formatDate(goalData.deadline)}</div>
+                    <div class="title">最終ゴール: ${goalData.title}</div>
+                    <div class="description">${goalData.description}</div>
+                    <div class="description"><strong>仕事面:</strong> ${goalData.workGoal}</div>
+                    <div class="description"><strong>生活面:</strong> ${goalData.lifeGoal}</div>
+                `;
+                timelineView.appendChild(goalItem);
+            }
+
+            // バックキャスティング情報の表示
+            if (goalData.backcast.month9 || goalData.backcast.month6 || goalData.backcast.month3) {
+                // 9ヶ月後
+                if (goalData.backcast.month9) {
+                    const month9Item = document.createElement('div');
+                    month9Item.className = 'timeline-item fade-in';
+                    month9Item.innerHTML = `
+                        <div class="date">9ヶ月後</div>
+                        <div class="title">中間目標</div>
+                        <div class="description">${goalData.backcast.month9}</div>
+                    `;
+                    timelineView.appendChild(month9Item);
+                }
+
+                // 6ヶ月後
+                if (goalData.backcast.month6) {
+                    const month6Item = document.createElement('div');
+                    month6Item.className = 'timeline-item fade-in';
+                    month6Item.innerHTML = `
+                        <div class="date">6ヶ月後</div>
+                        <div class="title">中間目標</div>
+                        <div class="description">${goalData.backcast.month6}</div>
+                    `;
+                    timelineView.appendChild(month6Item);
+                }
+
+                // 3ヶ月後
+                if (goalData.backcast.month3) {
+                    const month3Item = document.createElement('div');
+                    month3Item.className = 'timeline-item fade-in';
+                    month3Item.innerHTML = `
+                        <div class="date">3ヶ月後</div>
+                        <div class="title">中間目標</div>
+                        <div class="description">${goalData.backcast.month3}</div>
+                    `;
+                    timelineView.appendChild(month3Item);
+                }
+            }
+
+            // マイルストーンとアクションを日付順に表示
+            const timelineItems = [];
+
+            // マイルストーンをタイムラインアイテムに変換
+            goalData.milestones.forEach(milestone => {
+                timelineItems.push({
+                    type: 'milestone',
+                    date: new Date(milestone.deadline),
+                    data: milestone
+                });
+            });
+
+            // アクションをタイムラインアイテムに変換（完了日がある場合）
+            goalData.actions.forEach(action => {
+                if (action.completedDate) {
+                    timelineItems.push({
+                        type: 'action',
+                        date: new Date(action.completedDate),
+                        data: action
+                    });
+                }
+            });
+
+            // 日付順に並べ替え
+            timelineItems.sort((a, b) => a.date - b.date);
+
+            // タイムラインアイテムを表示
+            timelineItems.forEach(item => {
+                if (item.type === 'milestone') {
+                    const milestone = item.data;
+                    const typeLabel = milestone.type === 'work' ? '仕事' : milestone.type === 'life' ? '生活' : '両方';
+                    const typeColor = milestone.type === 'work' ? '#4a6fa5' : milestone.type === 'life' ? '#28a745' : '#6c757d';
+
+                    const milestoneItem = document.createElement('div');
+                    milestoneItem.className = 'timeline-item fade-in';
+                    milestoneItem.innerHTML = `
+                        <div class="date">${formatDate(milestone.deadline)}</div>
+                        <div class="title">マイルストーン: ${milestone.title} <span style="background-color: ${typeColor}; color: white; padding: 2px 6px; border-radius: 10px; font-size: 0.75rem;">${typeLabel}</span></div>
+                        <div class="description">${milestone.description}</div>
+                        <div class="progress-container">
+                            <div class="progress-bar">
+                                <div class="progress" style="width: ${calculateMilestoneProgress(milestone.id)}%"></div>
+                            </div>
+                            <div class="progress-text">${calculateMilestoneProgress(milestone.id)}% 完了</div>
+                        </div>
+                    `;
+                    timelineView.appendChild(milestoneItem);
+                } else if (item.type === 'action') {
+                    const action = item.data;
+                    const actionMilestone = goalData.milestones.find(m => m.id === action.milestoneId);
+
+                    const actionItem = document.createElement('div');
+                    actionItem.className = 'timeline-item fade-in';
+                    actionItem.innerHTML = `
+                        <div class="date">${formatDate(action.completedDate)}</div>
+                        <div class="title">アクション完了: ${action.title}</div>
+                        <div class="description">マイルストーン: ${actionMilestone ? actionMilestone.title : '不明'}</div>
+                    `;
+                    timelineView.appendChild(actionItem);
+                }
+            });
+        }
+
+        // すべての要素を画面に反映
+        function renderAll() {
+            renderGoal();
+            renderMilestones();
+            renderActions();
+            renderTimeline();
+        }
+
+        // 日付のフォーマット
+        function formatDate(dateString) {
+            if (!dateString) return '日付未設定';
+            
+            const date = new Date(dateString);
+            const year = date.getFullYear();
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+            
+            return `${year}年${month}月${day}日`;
+        }
+
+        // 所要時間のラベル取得
+        function getTimeLabel(timeValue) {
+            const timeLabels = {
+                '5min': '5分',
+                '10min': '10分',
+                '15min': '15分',
+                '30min': '30分',
+                '1h': '1時間',
+                '2h': '2時間以上'
+            };
+            
+            return timeLabels[timeValue] || timeValue;
+        }
+
+        // ユニークIDの生成
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+        }
+
+        // アクションの完了状態を切り替え
+        function toggleActionComplete(actionId) {
+            const actionIndex = goalData.actions.findIndex(action => action.id === actionId);
+            if (actionIndex !== -1) {
+                goalData.actions[actionIndex].completed = !goalData.actions[actionIndex].completed;
+                
+                // 完了日の設定/解除
+                if (goalData.actions[actionIndex].completed) {
+                    goalData.actions[actionIndex].completedDate = new Date().toISOString().split('T')[0];
+                } else {
+                    goalData.actions[actionIndex].completedDate = null;
+                }
+                
+                saveData();
+                renderAll();
+            }
+        }
+
+        // アクション詳細の表示
+        function showActionDetail(actionId) {
+            const action = goalData.actions.find(a => a.id === actionId);
+            if (!action) return;
+            
+            const milestone = goalData.milestones.find(m => m.id === action.milestoneId);
+            const detailContent = document.getElementById('action-detail-content');
+            
+            detailContent.innerHTML = `
+                <div class="form-group">
+                    <label>タイトル</label>
+                    <div>${action.title}</div>
+                </div>
+                <div class="form-group">
+                    <label>関連マイルストーン</label>
+                    <div>${milestone ? milestone.title : '不明'}</div>
+                </div>
+                <div class="form-group">
+                    <label>所要時間</label>
+                    <div>${getTimeLabel(action.time)}</div>
+                </div>
+                <div class="form-group">
+                    <label>実行するタイミング</label>
+                    <div>${action.when}</div>
+                </div>
+                <div class="form-group">
+                    <label>場所</label>
+                    <div>${action.where}</div>
+                </div>
+                <div class="form-group">
+                    <label>具体的な方法</label>
+                    <div>${action.how}</div>
+                </div>
+                <div class="form-group">
+                    <label>ステータス</label>
+                    <div>${action.completed ? '完了' : '未完了'}</div>
+                </div>
+            `;
+            
+            // ボタンの状態を更新
+            document.getElementById('mark-complete').textContent = action.completed ? '未完了に戻す' : '完了にする';
+            
+            // モーダルを表示
+            document.getElementById('action-detail-modal').style.display = 'block';
+            
+            // ボタンのイベントハンドラを設定
+            document.getElementById('mark-complete').onclick = function() {
+                toggleActionComplete(actionId);
+                document.getElementById('action-detail-modal').style.display = 'none';
+            };
+            
+            document.getElementById('edit-action').onclick = function() {
+                editAction(actionId);
+                document.getElementById('action-detail-modal').style.display = 'none';
+            };
+            
+            document.getElementById('delete-action').onclick = function() {
+                if (confirm('このアクションを削除してもよろしいですか？')) {
+                    deleteAction(actionId);
+                    document.getElementById('action-detail-modal').style.display = 'none';
+                }
+            };
+        }
+
+        // マイルストーンの編集
+        function editMilestone(milestoneId) {
+            const milestone = goalData.milestones.find(m => m.id === milestoneId);
+            if (!milestone) return;
+            
+            document.getElementById('milestone-title').value = milestone.title;
+            document.getElementById('milestone-description').value = milestone.description;
+            document.getElementById('milestone-deadline').value = milestone.deadline;
+            document.getElementById('milestone-type').value = milestone.type;
+            
+            // 追加ボタンの表示を変更
+            const addButton = document.getElementById('add-milestone');
+            addButton.textContent = 'マイルストーンを更新';
+            addButton.onclick = function() {
+                milestone.title = document.getElementById('milestone-title').value;
+                milestone.description = document.getElementById('milestone-description').value;
+                milestone.deadline = document.getElementById('milestone-deadline').value;
+                milestone.type = document.getElementById('milestone-type').value;
+                
+                saveData();
+                renderAll();
+                
+                // フォームをリセット
+                document.getElementById('milestone-title').value = '';
+                document.getElementById('milestone-description').value = '';
+                document.getElementById('milestone-deadline').value = '';
+                document.getElementById('milestone-type').value = 'work';
+                
+                // ボタンを元に戻す
+                addButton.textContent = 'マイルストーンを追加';
+                addButton.onclick = addMilestone;
+            };
+            
+            // タブを切り替え
+            document.querySelector('[data-tab="milestones"]').click();
+            document.getElementById('milestone-title').focus();
+        }
+
+        // マイルストーンの削除
+        function deleteMilestone(milestoneId) {
+            if (!confirm('このマイルストーンを削除してもよろしいですか？\n関連するアクションも削除されます。')) return;
+            
+            // 関連するアクションを削除
+            goalData.actions = goalData.actions.filter(action => action.milestoneId !== milestoneId);
+            
+            // マイルストーンを削除
+            goalData.milestones = goalData.milestones.filter(milestone => milestone.id !== milestoneId);
+            
+            saveData();
+            renderAll();
+        }
+
+        // アクションの編集
+        function editAction(actionId) {
+            const action = goalData.actions.find(a => a.id === actionId);
+            if (!action) return;
+            
+            document.getElementById('action-milestone').value = action.milestoneId;
+            document.getElementById('action-title').value = action.title;
+            document.getElementById('action-time').value = action.time;
+            document.getElementById('action-when').value = action.when;
+            document.getElementById('action-where').value = action.where;
+            document.getElementById('action-how').value = action.how;
+            
+            // 追加ボタンの表示を変更
+            const addButton = document.getElementById('add-action');
+            addButton.textContent = 'アクションを更新';
+            addButton.onclick = function() {
+                action.milestoneId = document.getElementById('action-milestone').value;
+                action.title = document.getElementById('action-title').value;
+                action.time = document.getElementById('action-time').value;
+                action.when = document.getElementById('action-when').value;
+                action.where = document.getElementById('action-where').value;
+                action.how = document.getElementById('action-how').value;
+                
+                saveData();
+                renderAll();
+                
+                // フォームをリセット
+                document.getElementById('action-milestone').value = '';
+                document.getElementById('action-title').value = '';
+                document.getElementById('action-time').value = '5min';
+                document.getElementById('action-when').value = '';
+                document.getElementById('action-where').value = '';
+                document.getElementById('action-how').value = '';
+                
+                // ボタンを元に戻す
+                addButton.textContent = 'アクションを追加';
+                addButton.onclick = addAction;
+            };
+            
+            // タブを切り替え
+            document.querySelector('[data-tab="actions"]').click();
+            document.getElementById('action-title').focus();
+        }
+
+        // アクションの削除
+        function deleteAction(actionId) {
+            goalData.actions = goalData.actions.filter(action => action.id !== actionId);
+            saveData();
+            renderAll();
+        }
+
+        // マイルストーンの追加
+        function addMilestone() {
+            const title = document.getElementById('milestone-title').value.trim();
+            const description = document.getElementById('milestone-description').value.trim();
+            const deadline = document.getElementById('milestone-deadline').value;
+            const type = document.getElementById('milestone-type').value;
+            
+            if (!title) {
+                alert('マイルストーンのタイトルを入力してください。');
+                return;
+            }
+            
+            if (!deadline) {
+                alert('達成期限を設定してください。');
+                return;
+            }
+            
+            const newMilestone = {
+                id: generateId(),
+                title,
+                description,
+                deadline,
+                type
+            };
+            
+            goalData.milestones.push(newMilestone);
+            saveData();
+            renderAll();
+            
+            // フォームをリセット
+            document.getElementById('milestone-title').value = '';
+            document.getElementById('milestone-description').value = '';
+            document.getElementById('milestone-deadline').value = '';
+            document.getElementById('milestone-type').value = 'work';
+        }
+
+        // アクションの追加
+        function addAction() {
+            const milestoneId = document.getElementById('action-milestone').value;
+            const title = document.getElementById('action-title').value.trim();
+            const time = document.getElementById('action-time').value;
+            const when = document.getElementById('action-when').value.trim();
+            const where = document.getElementById('action-where').value.trim();
+            const how = document.getElementById('action-how').value.trim();
+            
+            if (!milestoneId) {
+                alert('関連するマイルストーンを選択してください。');
+                return;
+            }
+            
+            if (!title) {
+                alert('アクションのタイトルを入力してください。');
+                return;
+            }
+            
+            const newAction = {
+                id: generateId(),
+                milestoneId,
+                title,
+                time,
+                when,
+                where,
+                how,
+                completed: false,
+                completedDate: null
+            };
+            
+            goalData.actions.push(newAction);
+            saveData();
+            renderAll();
+            
+            // フォームをリセット
+            document.getElementById('action-title').value = '';
+            document.getElementById('action-when').value = '';
+            document.getElementById('action-where').value = '';
+            document.getElementById('action-how').value = '';
+        }
+
+        // ゴールの保存
+        document.getElementById('save-goal').addEventListener('click', function() {
+            const title = document.getElementById('goal-title').value.trim();
+            const description = document.getElementById('goal-description').value.trim();
+            const deadline = document.getElementById('goal-deadline').value;
+            const workGoal = document.getElementById('work-goal').value.trim();
+            const lifeGoal = document.getElementById('life-goal').value.trim();
+            
+            if (!title) {
+                alert('ゴールのタイトルを入力してください。');
+                return;
+            }
+            
+            if (!deadline) {
+                alert('達成期限を設定してください。');
+                return;
+            }
+            
+            goalData.title = title;
+            goalData.description = description;
+            goalData.deadline = deadline;
+            goalData.workGoal = workGoal;
+            goalData.lifeGoal = lifeGoal;
+            
+            saveData();
+            renderAll();
+            
+            alert('ゴール情報を保存しました。');
+        });
+
+        // バックキャスティングの保存
+        document.getElementById('save-backcast').addEventListener('click', function() {
+            const month9 = document.getElementById('month-9').value.trim();
+            const month6 = document.getElementById('month-6').value.trim();
+            const month3 = document.getElementById('month-3').value.trim();
+            
+            goalData.backcast.month9 = month9;
+            goalData.backcast.month6 = month6;
+            goalData.backcast.month3 = month3;
+            
+            saveData();
+            renderAll();
+            
+            alert('バックキャスティング情報を保存しました。');
+        });
+
+        // タブの切り替え
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                // アクティブタブの更新
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                // タブコンテンツの表示/非表示
+                const tabId = this.getAttribute('data-tab');
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // モーダル閉じるボタン
+        document.querySelector('.modal-close').addEventListener('click', function() {
+            document.getElementById('action-detail-modal').style.display = 'none';
+        });
+
+        // モーダル外クリックで閉じる
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('action-detail-modal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        // データのエクスポート
+        document.getElementById('export-data').addEventListener('click', function() {
+            const dataStr = JSON.stringify(goalData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'goal-planner-data.json';
+            a.click();
+            
+            setTimeout(function() {
+                URL.revokeObjectURL(url);
+            }, 100);
+        });
+
+        // データのインポート（ファイル選択）
+        document.getElementById('import-data').addEventListener('click', function() {
+            document.getElementById('import-file').click();
+        });
+
+        // データのインポート（ファイル読み込み）
+        document.getElementById('import-file').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    
+                    // データの検証
+                    if (!importedData.title || !Array.isArray(importedData.milestones) || !Array.isArray(importedData.actions)) {
+                        throw new Error('インポートされたデータの形式が正しくありません。');
+                    }
+                    
+                    if (confirm('現在のデータを上書きしてインポートしますか？')) {
+                        goalData = importedData;
+                        saveData();
+                        renderAll();
+                        alert('データをインポートしました。');
+                    }
+                } catch (error) {
+                    alert('データのインポートに失敗しました: ' + error.message);
+                }
+                
+                // ファイル選択をリセット
+                event.target.value = '';
+            };
+            
+            reader.readAsText(file);
+        });
+
+        // データのクリア
+        document.getElementById('clear-data').addEventListener('click', function() {
+            if (confirm('すべてのデータを削除しますか？この操作は元に戻せません。')) {
+                localStorage.removeItem('goalPlannerData');
+                goalData = {
+                    title: '',
+                    description: '',
+                    deadline: '',
+                    workGoal: '',
+                    lifeGoal: '',
+                    backcast: {
+                        month9: '',
+                        month6: '',
+                        month3: ''
+                    },
+                    milestones: [],
+                    actions: []
+                };
+                renderAll();
+                alert('すべてのデータを削除しました。');
+            }
+        });
+
+        // リマインダー設定の保存
+        document.querySelectorAll('#reminder-daily, #reminder-weekly, #reminder-monthly').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const setting = this.id.replace('reminder-', '');
+                const isChecked = this.checked;
+                
+                if (!goalData.settings) {
+                    goalData.settings = {};
+                }
+                
+                if (!goalData.settings.reminders) {
+                    goalData.settings.reminders = {};
+                }
+                
+                goalData.settings.reminders[setting] = isChecked;
+                saveData();
+            });
+        });
+
+        // ページロード時の初期化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+            
+            // 初期設定の反映
+            if (goalData.settings && goalData.settings.reminders) {
+                const reminders = goalData.settings.reminders;
+                document.getElementById('reminder-daily').checked = !!reminders.daily;
+                document.getElementById('reminder-weekly').checked = !!reminders.weekly;
+                document.getElementById('reminder-monthly').checked = !!reminders.monthly;
+            }
+            
+            // マイルストーン追加ボタンの初期設定
+            document.getElementById('add-milestone').onclick = addMilestone;
+            
+            // アクション追加ボタンの初期設定
+            document.getElementById('add-action').onclick = addAction;
+        });
+    </script>
+</body>
+</html>
